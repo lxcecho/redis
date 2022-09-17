@@ -48,14 +48,14 @@
 #define DICT_NOTUSED(V) ((void) V)
 
 typedef struct dictEntry {
-    void *key;
+    void *key; // key 关键字定义
     union {
-        void *val;
+        void *val; // value 定义
         uint64_t u64;
         int64_t s64;
         double d;
     } v;
-    struct dictEntry *next;
+    struct dictEntry *next; // 指向下一个键值对节点
 } dictEntry;
 
 typedef struct dictType {

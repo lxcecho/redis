@@ -625,12 +625,15 @@ typedef struct RedisModuleDigest {
 #define OBJ_STATIC_REFCOUNT (INT_MAX-1) /* Object allocated in the stack. */
 #define OBJ_FIRST_SPECIAL_REFCOUNT OBJ_STATIC_REFCOUNT
 typedef struct redisObject {
-    unsigned type:4;
-    unsigned encoding:4;
+    unsigned type:4; // 对象的类型，包括 OBJ_STRING、OBJ_LIST、OBJ_HASH、OBJ_SET、OBJ_ZSET
+    unsigned encoding:4; // 具体的数据结构
+    /*24 位，对象最后一次被命令程序访问的时间，与内存回收有关*/
     unsigned lru:LRU_BITS; /* LRU time (relative to global lru_clock) or
                             * LFU data (least significant 8 bits frequency
                             * and most significant 16 bits access time). */
+    // 引用技术。当 refcount 为 0 的时候，表示该对象已经不被任何对象引用，则可以进行垃圾回收了
     int refcount;
+    // 指向对象实际的数据结构
     void *ptr;
 } robj;
 
@@ -663,8 +666,8 @@ typedef struct clientReplyBlock {
  * by integers from 0 (the default database) up to the max configured
  * database. The database number is the 'id' field in the structure. */
 typedef struct redisDb {
-    dict *dict;                 /* The keyspace for this DB */
-    dict *expires;              /* Timeout of keys with a timeout set */
+    dict *dict;                 /* 所有的键值对 The keyspace for this DB */
+    dict *expires;              /* 设置了过期时间的键值对 Timeout of keys with a timeout set */
     dict *blocking_keys;        /* Keys with clients waiting for data (BLPOP)*/
     dict *ready_keys;           /* Blocked keys that received a PUSH */
     dict *watched_keys;         /* WATCHED keys for MULTI/EXEC CAS */

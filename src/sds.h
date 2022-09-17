@@ -49,10 +49,10 @@ struct __attribute__ ((__packed__)) sdshdr5 {
     char buf[];
 };
 struct __attribute__ ((__packed__)) sdshdr8 {
-    uint8_t len; /* used */
-    uint8_t alloc; /* excluding the header and null terminator */
-    unsigned char flags; /* 3 lsb of type, 5 unused bits */
-    char buf[];
+    uint8_t len; /* 当前字符数组的长度 used */
+    uint8_t alloc; /* 当前字符数组总共分配的内存大小 excluding the header and null terminator */
+    unsigned char flags; /* 当前字符数组的属性、用来标识到底是 sdshdr8 还是 sdshdr16 等。 3 lsb of type, 5 unused bits */
+    char buf[]; // 字符串真正的值
 };
 struct __attribute__ ((__packed__)) sdshdr16 {
     uint16_t len; /* used */
