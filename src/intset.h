@@ -33,9 +33,9 @@
 #include <stdint.h>
 
 typedef struct intset {
-    uint32_t encoding;
-    uint32_t length;
-    int8_t contents[];
+    uint32_t encoding; /* 编码类型 int16_t、int32_t、int64_t */
+    uint32_t length; /* 长度 最大长度：2^32*/
+    int8_t contents[]; /* 用来存储成员的动态数组 */
 } intset;
 
 intset *intsetNew(void);

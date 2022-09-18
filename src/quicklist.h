@@ -103,13 +103,21 @@ typedef struct quicklistBookmark {
  * 'bookmakrs are an optional feature that is used by realloc this struct,
  *      so that they don't consume memory when not used. */
 typedef struct quicklist {
+    // 指向双向列表的表头
     quicklistNode *head;
+    // 指向双向列表的表尾
     quicklistNode *tail;
+    // 所有的 ziplist 重一共存了多少个元素
     unsigned long count;        /* total count of all entries in all ziplists */
+    // 双向链表的长度，node 的数量
     unsigned long len;          /* number of quicklistNodes */
+    // ziplist 最大大小，对应 list-max-ziplist-size
     int fill : QL_FILL_BITS;              /* fill factor for individual nodes */
+    // 压缩深度，对应 list-compress-depth
     unsigned int compress : QL_COMP_BITS; /* depth of end nodes not to compress;0=off */
+    // 4 位，bookmarks 数组的大小
     unsigned int bookmark_count: QL_BM_BITS;
+    // bookmarks 是一个可选字段，quicklist 重新分配内存空间时使用，不使用时不占用空间
     quicklistBookmark bookmarks[];
 } quicklist;
 

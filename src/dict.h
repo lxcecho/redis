@@ -70,18 +70,18 @@ typedef struct dictType {
 /* This is our hash table structure. Every dictionary has two of this as we
  * implement incremental rehashing, for the old to the new table. */
 typedef struct dictht {
-    dictEntry **table;
-    unsigned long size;
-    unsigned long sizemask;
-    unsigned long used;
+    dictEntry **table; /* 哈希表数组 */
+    unsigned long size; /* 哈希表大小 */
+    unsigned long sizemask; /* 掩码大小，用于计算索引值。总是等于 size-1 */
+    unsigned long used; /* 已有节点数 */
 } dictht;
 
 typedef struct dict {
-    dictType *type;
-    void *privdata;
-    dictht ht[2];
-    long rehashidx; /* rehashing not in progress if rehashidx == -1 */
-    unsigned long iterators; /* number of iterators currently running */
+    dictType *type; /* 字典类型 */
+    void *privdata; /* 私有数据 */
+    dictht ht[2]; /* 一个字典有两个哈希表 */
+    long rehashidx; /* rehash 索引。rehashing not in progress if rehashidx == -1 */
+    unsigned long iterators; /* 当前正在使用的迭代器数量 number of iterators currently running */
 } dict;
 
 /* If safe is set to 1 this is a safe iterator, that means, you can call

@@ -59,8 +59,8 @@
  * Note that even when dict_can_resize is set to 0, not all resizes are
  * prevented: a hash table is still allowed to grow if the ratio between
  * the number of elements and the buckets > dict_force_resize_ratio. */
-static int dict_can_resize = 1;
-static unsigned int dict_force_resize_ratio = 5;
+static int dict_can_resize = 1; // 是否需要扩容
+static unsigned int dict_force_resize_ratio = 5; // 扩容因子
 
 /* -------------------------- private prototypes ---------------------------- */
 

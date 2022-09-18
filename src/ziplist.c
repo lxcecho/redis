@@ -201,9 +201,9 @@
 /* Different encoding/length possibilities */
 #define ZIP_STR_MASK 0xc0
 #define ZIP_INT_MASK 0x30
-#define ZIP_STR_06B (0 << 6)
-#define ZIP_STR_14B (1 << 6)
-#define ZIP_STR_32B (2 << 6)
+#define ZIP_STR_06B (0 << 6) // 长度小于等于 64 字节
+#define ZIP_STR_14B (1 << 6) // 长度小于等于 16383 字节
+#define ZIP_STR_32B (2 << 6) // 长度小于等于 4294967295 字节
 #define ZIP_INT_16B (0xc0 | 0<<4)
 #define ZIP_INT_32B (0xc0 | 1<<4)
 #define ZIP_INT_64B (0xc0 | 2<<4)
@@ -280,21 +280,28 @@ int ziplistSafeToAdd(unsigned char* zl, size_t add) {
  * Note that this is not how the data is actually encoded, is just what we
  * get filled by a function in order to operate more easily. */
 typedef struct zlentry {
+    // 存储上一个链表节点的长度数值所需要的字节数
     unsigned int prevrawlensize; /* Bytes used to encode the previous entry len*/
+    // 上一个链表节点占用的长度
     unsigned int prevrawlen;     /* Previous entry len. */
+    // 存储当前链表节点长度数值所需要的字节数
     unsigned int lensize;        /* Bytes used to encode this entry type/len.
                                     For example strings have a 1, 2 or 5 bytes
                                     header. Integers always use a single byte.*/
+    // 当前链表节点占用的长度
     unsigned int len;            /* Bytes used to represent the actual entry.
                                     For strings this is just the string length
                                     while for integers it is 1, 2, 3, 4, 8 or
                                     0 (for 4 bit immediate) depending on the
                                     number range. */
+    // 当前链表头节点的头部大小（prevrallensize + lensize），即非数据域的大小
     unsigned int headersize;     /* prevrawlensize + lensize. */
+    // 编码方式
     unsigned char encoding;      /* Set to ZIP_STR_* or ZIP_INT_* depending on
                                     the entry encoding. However for 4 bits
                                     immediate integers this can assume a range
                                     of values and must be range-checked. */
+    // 压缩链表以字符串的形式保存，该指针指向当前节点的起始位置
     unsigned char *p;            /* Pointer to the very start of the entry, that
                                     is, this points to prev-entry-len field. */
 } zlentry;
